@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:prod_dev_23/services/service_imp.dart';
+
+import '../services/services.dart';
 
 class RegisterPage extends StatelessWidget {
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -12,7 +16,6 @@ class RegisterPage extends StatelessWidget {
   }
 
   void _registerUser(BuildContext context) {
-    // Validate email and password here.
     String email = emailController.text;
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
@@ -24,7 +27,15 @@ class RegisterPage extends StatelessWidget {
     } else if (password != confirmPassword) {
       _showSnackBar(context, 'Passwords do not match');
     } else {
-      // Add your registration logic here.
+      Services obj = ServiceImp();
+      try {
+        obj.signup(
+            name: nameController.text,
+            mail: emailController.text,
+            pass: passwordController.text);
+      } catch (e) {
+        _showSnackBar(context, e.toString());
+      }
     }
   }
 
@@ -43,6 +54,17 @@ class RegisterPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  hintText: 'Name',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(height: 20),
@@ -93,7 +115,6 @@ class RegisterPage extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-                      // Add navigation logic to go back to the login page.
                       Navigator.pop(context);
                     },
                     child: Text('Back to Login'),

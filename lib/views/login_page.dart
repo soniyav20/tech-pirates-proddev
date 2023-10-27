@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:prod_dev_23/services/service_imp.dart';
+import 'package:prod_dev_23/services/services.dart';
+import 'package:prod_dev_23/views/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -42,16 +45,15 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
-                // Navigate to the registration page
-                // Use Navigator.push() here
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterPage()),
+                );
               },
               child: Text("Register Now"),
             ),
             TextButton(
-              onPressed: () {
-                // Navigate to the forgot password page
-                // Use Navigator.push() here
-              },
+              onPressed: () {},
               child: Text("Forgot Password"),
             ),
           ],
@@ -73,12 +75,12 @@ class _LoginPageState extends State<LoginPage> {
       showSnackbar(context, "Password must be at least 6 characters long");
       return;
     }
-
-    // Add your authentication logic here
-    // You can use Firebase, a REST API, or any other authentication method
-
-    // If authentication is successful, navigate to the home page
-    // Use Navigator.pushReplacement() here
+    Services obj = ServiceImp();
+    try {
+      obj.signin(mail: emailController.text, pass: passwordController.text);
+    } catch (e) {
+      showSnackbar(context, e.toString());
+    }
   }
 
   void showSnackbar(BuildContext context, String message) {
