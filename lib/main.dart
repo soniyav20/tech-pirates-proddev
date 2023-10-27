@@ -14,5 +14,6 @@ Future<void> main() async {
 
   runApp(MaterialApp(
     home: LoginPage(),
+    debugShowCheckedModeBanner: false,
   ));
 }
