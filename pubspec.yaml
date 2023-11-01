@@ -46,14 +46,16 @@ dependencies:
   state_notifier: ^1.0.0
   flutter_state_notifier: ^1.0.0
   image_picker: ^0.8.7+2
-  firebase_messaging: ^14.7.3
+#  location:
+  geolocator: ^10.1.0
+  firebase_storage: ^11.4.1
+  geocoding: ^2.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   built_value_generator: ^8.7.0
   build_runner: ^2.4.6
-
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
