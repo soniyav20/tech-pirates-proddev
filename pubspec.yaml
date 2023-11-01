@@ -40,10 +40,20 @@ dependencies:
   firebase_core: ^2.20.0
   google_fonts: ^6.1.0
   particles_flutter: ^0.1.4
+  built_value: ^8.7.0
+  built_collection: ^5.1.1
+  provider: ^6.0.5
+  state_notifier: ^1.0.0
+  flutter_state_notifier: ^1.0.0
+  image_picker: ^0.8.7+2
+  location: ^4.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  built_value_generator: ^8.7.0
+  build_runner: ^2.4.6
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
