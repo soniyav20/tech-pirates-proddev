@@ -1,244 +1,91 @@
-// import 'dart:io';
-//
 // import 'package:flutter/material.dart';
+// import 'package:geocoding/geocoding.dart';
 // import 'package:geolocator/geolocator.dart';
-// import 'package:image_picker/image_picker.dart';
-// // import 'package:location/location.dart';
-// // import 'package:shiro/main.dart';
-// // import 'package:shiro/services/auth_services.dart';
-// // import 'package:shiro/services/auth_services_impl.dart';
-// // import 'package:shiro/views/menus.dart';
-// //
-// // import '../../auth/login_page.dart';
 //
-// class NewPost extends StatefulWidget {
-//   const NewPost({Key? key}) : super(key: key);
+// class LocationPage extends StatefulWidget {
+//   const LocationPage({Key? key}) : super(key: key);
 //
 //   @override
-//   State<NewPost> createState() => _NewPostState();
+//   State<LocationPage> createState() => _LocationPageState();
 // }
 //
-// class _NewPostState extends State<NewPost> {
-//   final _formKey = GlobalKey<FormState>();
-//   bool _isMyPet = false;
-//   String? _breed;
-//   String? _age;
-//   String? _gender;
-//   File? _image;
-//   File? _video;
-//   String? _description;
-//   // LocationData? _locationData;
-//   final ImagePicker _picker = ImagePicker();
-//   final Location _location = Geolocator();
+// class _LocationPageState extends State<LocationPage> {
+//   String? _currentAddress;
+//   Position? _currentPosition;
 //
-//   Future<void> _takePicture() async {
-//     final pickedFile = await _picker.getImage(source: ImageSource.camera);
-//     setState(() {
-//       if (pickedFile != null) {
-//         _image = File(pickedFile.path);
-//       } else {
-//         print('No image selected.');
-//       }
-//     });
-//   }
-//
-//   Future<void> _takeVideo() async {
-//     final pickedFile = await _picker.getVideo(source: ImageSource.camera);
-//     setState(() {
-//       if (pickedFile != null) {
-//         _video = File(pickedFile.path);
-//       } else {
-//         print('No video selected.');
-//       }
-//     });
-//   }
-//
-//   Future<void> _getCurrentLocation() async {
+//   Future<bool> _handleLocationPermission() async {
 //     bool serviceEnabled;
 //     LocationPermission permission;
 //
-//     // Check if location services are enabled
 //     serviceEnabled = await Geolocator.isLocationServiceEnabled();
 //     if (!serviceEnabled) {
-//       serviceEnabled = await Geolocator.openLocationSettings();
-//       if (!serviceEnabled) {
-//         return;
-//       }
+//       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+//           content: Text(
+//               'Location services are disabled. Please enable the services')));
+//       return false;
 //     }
-//
-//     // Check location permissions
 //     permission = await Geolocator.checkPermission();
 //     if (permission == LocationPermission.denied) {
 //       permission = await Geolocator.requestPermission();
-//       if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
-//         return;
+//       if (permission == LocationPermission.denied) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//             const SnackBar(content: Text('Location permissions are denied')));
+//         return false;
 //       }
 //     }
+//     if (permission == LocationPermission.deniedForever) {
+//       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+//           content: Text(
+//               'Location permissions are permanently denied, we cannot request permissions.')));
+//       return false;
+//     }
+//     return true;
+//   }
 //
+//   Future<void> _getCurrentPosition() async {
+//     final hasPermission = await _handleLocationPermission();
 //
-//     Position position = await Geolocator.getCurrentPosition(
-//       // desiredAccuracy: LocationAccuracy.high,
-//     );
+//     if (!hasPermission) return;
+//     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+//         .then((Position position) {
+//       setState(() => _currentPosition = position);
+//       _getAddressFromLatLng(_currentPosition!);
+//     }).catchError((e) {
+//       debugPrint(e);
+//     });
+//   }
 //
-//     setState(() {
-//       _locationData = position;
+//   Future<void> _getAddressFromLatLng(Position position) async {
+//     await placemarkFromCoordinates(
+//         _currentPosition!.latitude, _currentPosition!.longitude)
+//         .then((List<Placemark> placemarks) {
+//       Placemark place = placemarks[0];
+//       setState(() {
+//         _currentAddress =
+//         '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+//       });
+//     }).catchError((e) {
+//       debugPrint(e);
 //     });
 //   }
 //
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('New Post'),
-//         // actions: [
-//         //   IconButton(
-//         //       onPressed: () {
-//         //         AuthServices imp = new AuthServiceImpl();
-//         //         imp.signout();
-//         //         Navigator.push(
-//         //           context,
-//         //           MaterialPageRoute(builder: (context) => const Login()),
-//         //         );
-//         //       },
-//         //       icon: Icon(Icons.logout))
-//         // ],
-//       ),
-//       // drawer: const Menu(),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
+//       appBar: AppBar(title: const Text("Location Page")),
+//       body: SafeArea(
+//         child: Center(
 //           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: <Widget>[
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Text('LAT: ${_currentPosition?.latitude ?? ""}'),
+//               Text('LNG: ${_currentPosition?.longitude ?? ""}'),
+//               Text('ADDRESS: ${_currentAddress ?? ""}'),
+//               const SizedBox(height: 32),
 //               ElevatedButton(
-//                 onPressed: _takePicture,
-//                 child: const Text('Take Picture'),
-//               ),
-//               if (_image != null) Image.file(_image!),
-//               ElevatedButton(
-//                 onPressed: _takeVideo,
-//                 child: const Text('Take Video'),
-//               ),
-//               if (_video != null) const Text("Video Added"),
-//               TextField(
-//                 decoration: const InputDecoration(
-//                   hintText: 'Enter description',
-//                 ),
-//                 onChanged: (value) {
-//                   setState(() {
-//                     _description = value;
-//                   });
-//                 },
-//               ),
-//               const SizedBox(
-//                 height: 30,
-//               ),
-//               ElevatedButton(
-//                 onPressed: _getCurrentLocation,
-//                 child: const Text('Get Current Location'),
-//               ),
-//               if (_locationData != null)
-//                 Text(
-//                   'Latitude: ${_locationData!.latitude}, Longitude: ${_locationData!.longitude}',
-//                 ),
-//               const SizedBox(height: 20.0),
-//               const Text('Is it your own pet?'),
-//               Checkbox(
-//                 fillColor: MaterialStateProperty.all<Color>(Colors.red),
-//                 value: _isMyPet,
-//                 onChanged: (value) {
-//                   setState(() {
-//                     _isMyPet = value!;
-//                   });
-//                 },
-//               ),
-//               const SizedBox(height: 20.0),
-//               if (_isMyPet)
-//                 Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     TextFormField(
-//                       decoration: const InputDecoration(
-//                         labelText: 'Name',
-//                       ),
-//                     ),
-//                     const SizedBox(height: 20.0),
-//                     TextFormField(
-//                       decoration: const InputDecoration(
-//                         labelText: 'Breed',
-//                       ),
-//                       onChanged: (value) {
-//                         setState(() {
-//                           _breed = value;
-//                         });
-//                       },
-//                     ),
-//                     const SizedBox(height: 20.0),
-//                     DropdownButtonFormField(
-//                       decoration: const InputDecoration(
-//                         labelText: 'Age',
-//                       ),
-//                       value: _age,
-//                       onChanged: (value) {
-//                         setState(() {
-//                           _age = value;
-//                         });
-//                       },
-//                       items: ['1', '2', '3', '4', '5'].map((age) {
-//                         return DropdownMenuItem(
-//                           value: age,
-//                           child: Text(age),
-//                         );
-//                       }).toList(),
-//                     ),
-//                     const SizedBox(height: 20.0),
-//                     DropdownButtonFormField(
-//                       decoration: const InputDecoration(
-//                         labelText: 'Gender',
-//                       ),
-//                       value: _gender,
-//                       onChanged: (value) {
-//                         setState(() {
-//                           _gender = value;
-//                         });
-//                       },
-//                       items: ['Male', 'Female', 'Other'].map((gender) {
-//                         return DropdownMenuItem(
-//                           value: gender,
-//                           child: Text(gender),
-//                         );
-//                       }).toList(),
-//                     ),
-//                     const SizedBox(height: 20.0),
-//                   ],
-//                 ),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   if (_image != null && _video != null) {
-//                     _breed = null;
-//                     _age = null;
-//                     _gender = null;
-//                     _image = null;
-//                     _video = null;
-//                     _isMyPet = false;
-//                     _description = null;
-//
-//                     ScaffoldMessenger.of(context).showSnackBar(
-//                       const SnackBar(
-//                         content: Text('Form submitted'),
-//                       ),
-//                     );
-//                     setState(() {});
-//                   } else {
-//                     ScaffoldMessenger.of(context).showSnackBar(
-//                       const SnackBar(
-//                         content: Text('Image,Video,Location Mandatory'),
-//                       ),
-//                     );
-//                   }
-//                 },
-//                 child: const Text('Submit'),
-//               ),
+//                 onPressed: _getCurrentPosition,
+//                 child: const Text("Get Current Location"),
+//               )
 //             ],
 //           ),
 //         ),
