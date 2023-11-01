@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prod_dev_23/services/service_imp.dart';
 import 'package:prod_dev_23/views/login_page.dart';
+
 import '../services/services.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -45,15 +46,14 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          CircularParticleScreen(),
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0.7),
-          ),
-          SingleChildScrollView(
+      body: Stack(children: [
+        CircularParticleScreen(),
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black.withOpacity(0.7),
+        ),
+        SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -162,6 +162,7 @@ class RegisterPage extends StatelessWidget {
                     'Sign Up',
                     style: TextStyle(
                       fontSize: 16,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -183,8 +184,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
         ),
-    ]
-      ),
+      ]),
     );
   }
 }

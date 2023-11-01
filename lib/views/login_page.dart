@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:particles_flutter/particles_flutter.dart';
 import 'package:prod_dev_23/services/service_imp.dart';
 import 'package:prod_dev_23/views/forgot_password_page.dart';
 import 'package:prod_dev_23/views/home_page.dart';
 import 'package:prod_dev_23/views/signup_page.dart';
+
 import '../services/services.dart';
-import 'package:particles_flutter/particles_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -64,13 +65,15 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Login',
+                      'Dejavu',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 28, // Increased font size
+                        fontSize: 32, // Increased font size
                         color: Colors.white,
+
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -125,81 +128,19 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                       ),
-                      obscureText: !_passwordVisible, // Toggle password visibility
+                      obscureText:
+                          !_passwordVisible, // Toggle password visibility
                     ),
                     SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: () {
-                        _loginUser(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 20, // Increased font size
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           PageRouteBuilder(
                             transitionDuration: Duration(milliseconds: 500),
-                            pageBuilder: (context, animation,
-                                secondaryAnimation) =>
-                                RegisterPage(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(1.0, 0.0);
-                              const end = Offset.zero;
-                              const curve = Curves.easeInOut;
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var offsetAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.black),
-                        foregroundColor: MaterialStateProperty.all(Colors.red),
-                        side: MaterialStateProperty.all(BorderSide(
-                          color: Colors.red, // Border color
-                          width: 1.0, // Border width
-                        )),
-                      ),
-                      child: Text(
-                        'Create an Account',
-                        style: TextStyle(
-                          fontSize: 20, // Increased font size
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            transitionDuration: Duration(milliseconds: 500),
-                            pageBuilder: (context, animation,
-                                secondaryAnimation) =>
-                                ForgotPasswordPage(),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    ForgotPasswordPage(),
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
                               const begin = Offset(1.0, 0.0);
@@ -223,6 +164,70 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16,
                           color: Colors.red,
                           decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _loginUser(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 20, // Increased font size
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 500),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    RegisterPage(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      // style: ButtonStyle(
+                      //   backgroundColor:
+                      //       MaterialStateProperty.all(Colors.black),
+                      //   foregroundColor: MaterialStateProperty.all(Colors.red),
+                      //   side: MaterialStateProperty.all(BorderSide(
+                      //     color: Colors.red, // Border color
+                      //     width: 1.0, // Border width
+                      //   )),
+                      // ),
+                      child: Text(
+                        'Don\'t have an account? Register Here',
+                        style: TextStyle(
+                          fontSize: 16, // Increased font size
+                          color: Colors.red,
                         ),
                       ),
                     ),

@@ -1,5 +1,7 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:prod_dev_23/models/post.dart';
 import 'package:prod_dev_23/services/services.dart';
 
 class ServiceImp implements Services {
@@ -30,5 +32,39 @@ class ServiceImp implements Services {
         .set({"mail": mail, "name": name, "id": userc.user!.uid});
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: mail ?? '', password: pass ?? '');
+  }
+
+  @override
+  Future<void> postMemory(String memory, double? latitude, double? logitude,
+      String? address, String imageUrl) async {
+    final uidd = await FirebaseAuth.instance.currentUser!.uid;
+    final feeds = await FirebaseFirestore.instance.collection('memories').doc();
+    Post newFeed = Post((b) => b
+      ..address = address
+      ..userId = uidd
+      ..imageUrl = imageUrl
+      ..latitude = latitude
+      ..longitude = logitude
+      // ..time = Timestamp.now().toDate().toString()
+      ..memory = memory);
+    feeds.set(newFeed.toJson());
+  }
+
+  Future<BuiltList<Post>> getMyMemories() async {
+    final uidd = await FirebaseAuth.instance.currentUser!.uid;
+    final QuerySnapshot<Map<String, dynamic>> _collectionRef =
+        await FirebaseFirestore.instance
+            .collection('memories')
+            .where('userid', isEqualTo: uidd)
+            .orderBy('time', descending: true)
+            .get();
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshot =
+        _collectionRef.docs;
+    List<Post> list = [];
+    snapshot.forEach((element) {
+      list.add(Post.fromJson(element.data()));
+    });
+    print(list);
+    return list.toBuiltList();
   }
 }

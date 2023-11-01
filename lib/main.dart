@@ -11,6 +11,8 @@ Future<void> main() async {
           messagingSenderId: '12862108178',
           projectId: 'proddev2023'));
   WidgetsFlutterBinding.ensureInitialized();
+  String messageTitle = "Empty";
+  String notificationAlert = "alert";
 
   runApp(MaterialApp(
     home: LoginPage(),
