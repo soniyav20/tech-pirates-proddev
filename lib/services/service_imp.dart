@@ -38,6 +38,7 @@ class ServiceImp implements Services {
   Future<void> postMemory(String memory, double? latitude, double? logitude,
       String? address, String imageUrl) async {
     final uidd = await FirebaseAuth.instance.currentUser!.uid;
+    print(uidd);
     final feeds = await FirebaseFirestore.instance.collection('memories').doc();
     Post newFeed = Post((b) => b
       ..address = address
@@ -45,9 +46,10 @@ class ServiceImp implements Services {
       ..imageUrl = imageUrl
       ..latitude = latitude
       ..longitude = logitude
-      // ..time = Timestamp.now().toDate().toString()
+      ..time = Timestamp.now().toDate().toString()
       ..memory = memory);
     feeds.set(newFeed.toJson());
+    print("Added");
   }
 
   Future<BuiltList<Post>> getMyMemories() async {
@@ -55,7 +57,7 @@ class ServiceImp implements Services {
     final QuerySnapshot<Map<String, dynamic>> _collectionRef =
         await FirebaseFirestore.instance
             .collection('memories')
-            .where('userid', isEqualTo: uidd)
+            .where('userId', isEqualTo: uidd)
             .orderBy('time', descending: true)
             .get();
     List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshot =
@@ -66,5 +68,19 @@ class ServiceImp implements Services {
     });
     print(list);
     return list.toBuiltList();
+  }
+
+  Future<void> delPost(String postId) async {
+    await FirebaseFirestore.instance
+        .collection('needWorkers')
+        .doc(postId)
+        .delete();
+  }
+
+  Future<void> updateMemory(String postId, String memory) async {
+    await FirebaseFirestore.instance
+        .collection('needWorkers')
+        .doc(postId)
+        .update({"memory": memory});
   }
 }

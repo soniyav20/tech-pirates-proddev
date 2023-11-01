@@ -1,6 +1,8 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:prod_dev_23/models/app_state.dart';
+import 'package:prod_dev_23/models/post.dart';
 import 'package:prod_dev_23/services/service_imp.dart';
 import 'package:prod_dev_23/services/services.dart';
 
@@ -21,10 +23,10 @@ class MyModel extends StateNotifier<AppState> with LocatorMixin {
 
   Services obj = new ServiceImp();
 
-  // Future<void> postNewMemory() async {
-  //   final BuiltList<Post> a = await obj.();
-  //   state = state.rebuild((p0) {
-  //     p0.myPosts = a.toBuilder();
-  //   });
-  // }
+  Future<void> getmemories() async {
+    final BuiltList<Post> a = await obj.getMyMemories();
+    state = state.rebuild((p0) {
+      p0.myPosts = a.toBuilder();
+    });
+  }
 }

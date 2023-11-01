@@ -25,8 +25,7 @@ class _$PostSerializer implements StructuredSerializer<Post> {
       serializers.serialize(object.userId,
           specifiedType: const FullType(String)),
       'time',
-      serializers.serialize(object.time,
-          specifiedType: const FullType(Timestamp)),
+      serializers.serialize(object.time, specifiedType: const FullType(String)),
     ];
     Object? value;
     value = object.latitude;
@@ -97,7 +96,7 @@ class _$PostSerializer implements StructuredSerializer<Post> {
           break;
         case 'time':
           result.time = serializers.deserialize(value,
-              specifiedType: const FullType(Timestamp))! as Timestamp;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -120,7 +119,7 @@ class _$Post extends Post {
   @override
   final String userId;
   @override
-  final Timestamp time;
+  final String time;
 
   factory _$Post([void Function(PostBuilder)? updates]) =>
       (new PostBuilder()..update(updates))._build();
@@ -214,9 +213,9 @@ class PostBuilder implements Builder<Post, PostBuilder> {
   String? get userId => _$this._userId;
   set userId(String? userId) => _$this._userId = userId;
 
-  Timestamp? _time;
-  Timestamp? get time => _$this._time;
-  set time(Timestamp? time) => _$this._time = time;
+  String? _time;
+  String? get time => _$this._time;
+  set time(String? time) => _$this._time = time;
 
   PostBuilder();
 

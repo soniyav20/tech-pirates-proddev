@@ -13,8 +13,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController =
+      TextEditingController(text: "demo@gmail.com");
+  TextEditingController passwordController =
+      TextEditingController(text: "123qwe");
   bool _passwordVisible = false;
 
   void _showSnackBar(BuildContext context, String message) {

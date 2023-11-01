@@ -25,5 +25,5 @@ abstract class Post implements Built<Post, PostBuilder> {
   String? get address;
   String? get imageUrl;
   String get userId;
-  Timestamp get time;
+  String get time;
 }
