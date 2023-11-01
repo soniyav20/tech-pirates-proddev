@@ -9,4 +9,6 @@ abstract class Services {
   Future<void> postMemory(String memory, double? latitude, double? logitude,
       String? address, String imageUrl);
   Future<BuiltList<Post>> getMyMemories();
+  Future<void> delPost(String postId);
+  Future<void> updateMemory(String postId, String memory);
 }

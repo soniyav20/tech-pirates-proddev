@@ -39,10 +39,12 @@ class ServiceImp implements Services {
       String? address, String imageUrl) async {
     final uidd = await FirebaseAuth.instance.currentUser!.uid;
     print(uidd);
-    final feeds = await FirebaseFirestore.instance.collection('memories').doc();
+    final feeds =
+    await FirebaseFirestore.instance.collection('memories').doc();
     Post newFeed = Post((b) => b
       ..address = address
       ..userId = uidd
+      ..id= feeds.id.toString()
       ..imageUrl = imageUrl
       ..latitude = latitude
       ..longitude = logitude
@@ -72,14 +74,15 @@ class ServiceImp implements Services {
 
   Future<void> delPost(String postId) async {
     await FirebaseFirestore.instance
-        .collection('needWorkers')
+        .collection('memories')
         .doc(postId)
         .delete();
+    print('deletd');
   }
 
   Future<void> updateMemory(String postId, String memory) async {
     await FirebaseFirestore.instance
-        .collection('needWorkers')
+        .collection('memories')
         .doc(postId)
         .update({"memory": memory});
   }

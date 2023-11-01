@@ -26,6 +26,8 @@ class _$PostSerializer implements StructuredSerializer<Post> {
           specifiedType: const FullType(String)),
       'time',
       serializers.serialize(object.time, specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
     ];
     Object? value;
     value = object.latitude;
@@ -98,6 +100,10 @@ class _$PostSerializer implements StructuredSerializer<Post> {
           result.time = serializers.deserialize(value,
               specifiedType: const FullType(String))! as String;
           break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String))! as String;
+          break;
       }
     }
 
@@ -120,6 +126,8 @@ class _$Post extends Post {
   final String userId;
   @override
   final String time;
+  @override
+  final String id;
 
   factory _$Post([void Function(PostBuilder)? updates]) =>
       (new PostBuilder()..update(updates))._build();
@@ -131,11 +139,13 @@ class _$Post extends Post {
       this.address,
       this.imageUrl,
       required this.userId,
-      required this.time})
+      required this.time,
+      required this.id})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(memory, r'Post', 'memory');
     BuiltValueNullFieldError.checkNotNull(userId, r'Post', 'userId');
     BuiltValueNullFieldError.checkNotNull(time, r'Post', 'time');
+    BuiltValueNullFieldError.checkNotNull(id, r'Post', 'id');
   }
 
   @override
@@ -155,7 +165,8 @@ class _$Post extends Post {
         address == other.address &&
         imageUrl == other.imageUrl &&
         userId == other.userId &&
-        time == other.time;
+        time == other.time &&
+        id == other.id;
   }
 
   @override
@@ -168,6 +179,7 @@ class _$Post extends Post {
     _$hash = $jc(_$hash, imageUrl.hashCode);
     _$hash = $jc(_$hash, userId.hashCode);
     _$hash = $jc(_$hash, time.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -181,7 +193,8 @@ class _$Post extends Post {
           ..add('address', address)
           ..add('imageUrl', imageUrl)
           ..add('userId', userId)
-          ..add('time', time))
+          ..add('time', time)
+          ..add('id', id))
         .toString();
   }
 }
@@ -217,6 +230,10 @@ class PostBuilder implements Builder<Post, PostBuilder> {
   String? get time => _$this._time;
   set time(String? time) => _$this._time = time;
 
+  String? _id;
+  String? get id => _$this._id;
+  set id(String? id) => _$this._id = id;
+
   PostBuilder();
 
   PostBuilder get _$this {
@@ -229,6 +246,7 @@ class PostBuilder implements Builder<Post, PostBuilder> {
       _imageUrl = $v.imageUrl;
       _userId = $v.userId;
       _time = $v.time;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -259,7 +277,8 @@ class PostBuilder implements Builder<Post, PostBuilder> {
             imageUrl: imageUrl,
             userId: BuiltValueNullFieldError.checkNotNull(
                 userId, r'Post', 'userId'),
-            time: BuiltValueNullFieldError.checkNotNull(time, r'Post', 'time'));
+            time: BuiltValueNullFieldError.checkNotNull(time, r'Post', 'time'),
+            id: BuiltValueNullFieldError.checkNotNull(id, r'Post', 'id'));
     replace(_$result);
     return _$result;
   }

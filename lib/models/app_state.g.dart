@@ -22,6 +22,14 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
       serializers.serialize(object.myPosts,
           specifiedType:
               const FullType(BuiltList, const [const FullType(Post)])),
+      'searched',
+      serializers.serialize(object.searched,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Post)])),
+      'filtered',
+      serializers.serialize(object.filtered,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Post)])),
     ];
     Object? value;
     value = object.currentMemoryPost;
@@ -55,6 +63,18 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
                       const FullType(BuiltList, const [const FullType(Post)]))!
               as BuiltList<Object?>);
           break;
+        case 'searched':
+          result.searched.replace(serializers.deserialize(value,
+                  specifiedType:
+                      const FullType(BuiltList, const [const FullType(Post)]))!
+              as BuiltList<Object?>);
+          break;
+        case 'filtered':
+          result.filtered.replace(serializers.deserialize(value,
+                  specifiedType:
+                      const FullType(BuiltList, const [const FullType(Post)]))!
+              as BuiltList<Object?>);
+          break;
       }
     }
 
@@ -67,12 +87,23 @@ class _$AppState extends AppState {
   final Post? currentMemoryPost;
   @override
   final BuiltList<Post> myPosts;
+  @override
+  final BuiltList<Post> searched;
+  @override
+  final BuiltList<Post> filtered;
 
   factory _$AppState([void Function(AppStateBuilder)? updates]) =>
       (new AppStateBuilder()..update(updates))._build();
 
-  _$AppState._({this.currentMemoryPost, required this.myPosts}) : super._() {
+  _$AppState._(
+      {this.currentMemoryPost,
+      required this.myPosts,
+      required this.searched,
+      required this.filtered})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(myPosts, r'AppState', 'myPosts');
+    BuiltValueNullFieldError.checkNotNull(searched, r'AppState', 'searched');
+    BuiltValueNullFieldError.checkNotNull(filtered, r'AppState', 'filtered');
   }
 
   @override
@@ -87,7 +118,9 @@ class _$AppState extends AppState {
     if (identical(other, this)) return true;
     return other is AppState &&
         currentMemoryPost == other.currentMemoryPost &&
-        myPosts == other.myPosts;
+        myPosts == other.myPosts &&
+        searched == other.searched &&
+        filtered == other.filtered;
   }
 
   @override
@@ -95,6 +128,8 @@ class _$AppState extends AppState {
     var _$hash = 0;
     _$hash = $jc(_$hash, currentMemoryPost.hashCode);
     _$hash = $jc(_$hash, myPosts.hashCode);
+    _$hash = $jc(_$hash, searched.hashCode);
+    _$hash = $jc(_$hash, filtered.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -103,7 +138,9 @@ class _$AppState extends AppState {
   String toString() {
     return (newBuiltValueToStringHelper(r'AppState')
           ..add('currentMemoryPost', currentMemoryPost)
-          ..add('myPosts', myPosts))
+          ..add('myPosts', myPosts)
+          ..add('searched', searched)
+          ..add('filtered', filtered))
         .toString();
   }
 }
@@ -121,6 +158,16 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   ListBuilder<Post> get myPosts => _$this._myPosts ??= new ListBuilder<Post>();
   set myPosts(ListBuilder<Post>? myPosts) => _$this._myPosts = myPosts;
 
+  ListBuilder<Post>? _searched;
+  ListBuilder<Post> get searched =>
+      _$this._searched ??= new ListBuilder<Post>();
+  set searched(ListBuilder<Post>? searched) => _$this._searched = searched;
+
+  ListBuilder<Post>? _filtered;
+  ListBuilder<Post> get filtered =>
+      _$this._filtered ??= new ListBuilder<Post>();
+  set filtered(ListBuilder<Post>? filtered) => _$this._filtered = filtered;
+
   AppStateBuilder();
 
   AppStateBuilder get _$this {
@@ -128,6 +175,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     if ($v != null) {
       _currentMemoryPost = $v.currentMemoryPost?.toBuilder();
       _myPosts = $v.myPosts.toBuilder();
+      _searched = $v.searched.toBuilder();
+      _filtered = $v.filtered.toBuilder();
       _$v = null;
     }
     return this;
@@ -153,7 +202,9 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _$result = _$v ??
           new _$AppState._(
               currentMemoryPost: _currentMemoryPost?.build(),
-              myPosts: myPosts.build());
+              myPosts: myPosts.build(),
+              searched: searched.build(),
+              filtered: filtered.build());
     } catch (_) {
       late String _$failedField;
       try {
@@ -161,6 +212,10 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
         _currentMemoryPost?.build();
         _$failedField = 'myPosts';
         myPosts.build();
+        _$failedField = 'searched';
+        searched.build();
+        _$failedField = 'filtered';
+        filtered.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             r'AppState', _$failedField, e.toString());

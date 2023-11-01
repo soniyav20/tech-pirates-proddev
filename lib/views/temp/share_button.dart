@@ -1,25 +1,26 @@
-import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:prod_dev_23/services/service_imp.dart';
 import 'package:prod_dev_23/services/services.dart';
+import 'package:share/share.dart';
 
-class LocationPage extends StatefulWidget {
-  const LocationPage({Key? key}) : super(key: key);
+class ShareButtonPage extends StatefulWidget {
+  const ShareButtonPage({Key? key}) : super(key: key);
 
   @override
-  State<LocationPage> createState() => _LocationPageState();
+  State<ShareButtonPage> createState() => _ShareButtonPageState();
 }
 
-class _LocationPageState extends State<LocationPage> {
+class _ShareButtonPageState extends State<ShareButtonPage> {
   String? _currentAddress;
   Position? _currentPosition;
+  File? _photo;
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -50,26 +51,16 @@ class _LocationPageState extends State<LocationPage> {
     return true;
   }
 
-  String filename = '';
-  bool load = false;
-
   Future<void> _getCurrentPosition() async {
     final hasPermission = await _handleLocationPermission();
 
     if (!hasPermission) return;
-    setState(() {
-      load = true;
-    });
-
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
       _getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
       debugPrint(e);
-    });
-    setState(() {
-      load = false;
     });
   }
 
@@ -80,48 +71,63 @@ class _LocationPageState extends State<LocationPage> {
       Placemark place = placemarks[0];
       setState(() {
         _currentAddress =
-        '${place.street}, ${place.subLocality}, ${place
-            .subAdministrativeArea}, ${place.postalCode}';
+        '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
       });
     }).catchError((e) {
       debugPrint(e);
     });
   }
 
+  void _shareMemory() {
+
+    String shareContent = "Hey, how was your day?\n\n";
+    if (_currentAddress != null) {
+      shareContent += "Location: $_currentAddress\n";
+    }
+
+    String imageUrl = 'https://miro.medium.com/v2/resize:fit:640/format:webp/1*AUyrve2ecHJlXkdXfjv0Fw.png';
+    shareContent += "Image: $imageUrl\n";
+
+    Share.share(shareContent).then((value) {
+
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController mem = new TextEditingController();
-    TextEditingController add = new TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New Memory Page"),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                Services obj = new ServiceImp();
-                final destination = 'files/$filename';
-                print(filename);
-                String downloadURL = await FirebaseStorage.instance
-                    .ref(destination)
-                // .child('file/')
-                    .getDownloadURL();
-                print("Found ya");
-                await obj.postMemory(mem.text, _currentPosition?.latitude,
-                    _currentPosition?.longitude, _currentAddress, downloadURL);
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.check))
+        actions: <Widget>[
+          Row(
+            children: [
+              // IconButton(
+              //   icon: Icon(Icons.delete),
+              //   onPressed: () {
+              //     Services obj =new ServiceImp();
+              //     obj.delPost(postId)
+              //   },
+              // ),
+              IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () {
+                  _shareMemory();
+                },
+              ),
+            ],
+          ),
         ],
       ),
+
       body: SingleChildScrollView(
         child: SafeArea(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 80,
-                ),
+                SizedBox(height: 80,),
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -157,7 +163,6 @@ class _LocationPageState extends State<LocationPage> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    controller: mem,
                     maxLength: 500,
                     maxLines: 10,
                     decoration: InputDecoration(
@@ -169,35 +174,11 @@ class _LocationPageState extends State<LocationPage> {
                 // Text('LAT: ${_currentPosition?.latitude ?? ""}'),
                 // Text('LNG: ${_currentPosition?.longitude ?? ""}'),
                 const SizedBox(height: 32),
-                load == false
-                    ? ElevatedButton(
+                ElevatedButton(
                   onPressed: _getCurrentPosition,
                   child: const Text("Get Current Location"),
-                )
-                    : CircularProgressIndicator(),
-                _currentAddress != null
-                    ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(_currentAddress.toString()),
-                )
-                    : Container(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("or"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextFormField(
-                    onChanged: (value) {
-                      setState(() {
-                        _currentAddress = value;
-                      });
-                    },
-                    controller: add,
-                    decoration:
-                    InputDecoration(hintText: "Enter Location Manually"),
-                  ),
-                )
+                Text('ADDRESS: ${_currentAddress ?? ""}'),
               ],
             ),
           ),
@@ -205,11 +186,10 @@ class _LocationPageState extends State<LocationPage> {
       ),
     );
   }
-
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
-  File? _photo;
+  // File? _photo;
   final ImagePicker _picker = ImagePicker();
 
   Future imgFromGallery() async {
@@ -242,10 +222,11 @@ class _LocationPageState extends State<LocationPage> {
     if (_photo == null) return;
     final fileName = basename(_photo!.path);
     final destination = 'files/$fileName';
-    filename = fileName;
+
     try {
-      final ref = firebase_storage.FirebaseStorage.instance.ref(destination);
-      // .child('file/');
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('file/');
       await ref.putFile(_photo!);
     } catch (e) {
       print('error occured');
@@ -279,4 +260,5 @@ class _LocationPageState extends State<LocationPage> {
           );
         });
   }
+
 }

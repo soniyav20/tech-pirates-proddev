@@ -40,10 +40,8 @@ class _LoginPageState extends State<LoginPage> {
           mail: emailController.text,
           pass: passwordController.text,
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+
       } catch (e) {
         _showSnackBar(context, e.toString());
       }

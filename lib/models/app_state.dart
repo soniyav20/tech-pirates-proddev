@@ -22,4 +22,6 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   static Serializer<AppState> get serializer => _$appStateSerializer;
   Post? get currentMemoryPost;
   BuiltList<Post> get myPosts;
+  BuiltList<Post> get searched;
+  BuiltList<Post> get filtered;
 }
